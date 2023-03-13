@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\danil\\RiderProjects\\DiaryBot\\DiaryBot\\DiaryBot.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\danil\\RiderProjects\\DiaryBot\\DiaryBot\\DiaryBot.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\danil\\RiderProjects\\DiaryBot\\DiaryBot\\DiaryBot.csproj",
+        "projectName": "DiaryBot",
+        "projectPath": "C:\\Users\\danil\\RiderProjects\\DiaryBot\\DiaryBot\\DiaryBot.csproj",
+        "packagesPath": "C:\\Users\\danil\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\danil\\RiderProjects\\DiaryBot\\DiaryBot\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\danil\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Telegram.Bot": {
+              "target": "Package",
+              "version": "[19.0.0-preview.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Users\\danil\\.dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
