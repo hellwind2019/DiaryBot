@@ -32,7 +32,7 @@ async static Task Update(ITelegramBotClient botClient, Update update, Cancellati
     }
     if (message.Photo != null)
     {
-        await botClient.SendTextMessageAsync(message.Chat.Id, "Ща погодь, сделаю лучше");
+        await botClient.SendTextMessageAsync(message.Chat.Id, "сделаю лучше");
         return;
     }
 }
