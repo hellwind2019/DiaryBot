@@ -23,7 +23,7 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
     FirebaseClient firebaseClient = new FirebaseClient(config);
     
     var message = update.Message;
-    var botToken = "5995864096:AAFvvRBUzfgmGuUeI0CMA10W1FMq2Ec72iQ";
+    var botToken = "5995864096:AAFvvRBUzfgmGuUeI0CMA10W1FMq2Ec72iQ"; // Фак я написал свой первый коммент это боттокен йоу
     var isStartedField = "isStarted";
     var channelIDField = "channelID";
     var registeredField = "registered";
