@@ -16,3 +16,9 @@ C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\obj\Debug\net6.0\ref\DiaryBot.dll
 C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\Telegram.Bot.dll
 C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\obj\Debug\net6.0\DiaryBot.csproj.CopyComplete
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\FireSharp.dll
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\Microsoft.Threading.Tasks.Extensions.Desktop.dll
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\Microsoft.Threading.Tasks.Extensions.dll
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\Microsoft.Threading.Tasks.dll
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\System.Net.Http.Extensions.dll
+C:\Users\danil\RiderProjects\DiaryBot\DiaryBot\bin\Debug\net6.0\System.Net.Http.Primitives.dll

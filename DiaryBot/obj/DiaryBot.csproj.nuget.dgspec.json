@@ -38,6 +38,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "FireSharp": {
+              "target": "Package",
+              "version": "[2.0.4, )"
+            },
             "Telegram.Bot": {
               "target": "Package",
               "version": "[19.0.0-preview.2, )"
