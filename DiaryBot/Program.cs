@@ -27,7 +27,7 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
     var isStartedField = "isStarted";
     var channelIDField = "channelID";
     var registeredField = "registered";
-    
+    //тест новой ветки
     
     if (message?.Text != null)
     {
