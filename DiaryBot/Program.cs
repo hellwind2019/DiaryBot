@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 var botToken = "5995864096:AAFvvRBUzfgmGuUeI0CMA10W1FMq2Ec72iQ";
 var client = new TelegramBotClient(botToken);
 client.StartReceiving(Update, Error);
-
+Console.WriteLine("Бот запущен \n");
 Console.ReadLine();
 
 static async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
@@ -27,10 +27,10 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
     var isStartedField = "isStarted";
     var channelIDField = "channelID";
     var registeredField = "registered";
-    //тест новой ветки
-    
+
     if (message?.Text != null)
     {
+        Console.WriteLine($@"{message.Chat.FirstName}  ||  {message.Chat.Title}  ||  {message.Text}");
         FirebaseResponse responseRegisterStatus = await firebaseClient.GetAsync($"{message.Chat.Id}/{registeredField}");
         var registerStatus = responseRegisterStatus.ResultAs<string>();
         if (registerStatus!="true")
