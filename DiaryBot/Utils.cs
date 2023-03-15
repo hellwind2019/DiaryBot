@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using System.Timers;
+using Telegram.Bot.Types.ReplyMarkups;
 using Timer = System.Timers.Timer;
 
 namespace DiaryBot;
@@ -21,7 +22,7 @@ public class Utils
         var json = JObject.Parse(responseContent);
         if (json.ContainsKey("result"))
         {
-            channelid =  json["result"]["id"].Value<long>();
+            channelid = json["result"]["id"].Value<long>();
             return channelid;
         }
 
@@ -51,6 +52,13 @@ public class Utils
         var registerStatus = responseRegisterStatus.ResultAs<string>();
         return registerStatus;
     }
+    public static async Task<string> GetUserField(FirebaseClient firebaseClient, Message message, string field)
+    {
+        var responseRegisterStatus =
+            await firebaseClient.GetAsync($"Users/{message.Chat.Id}/{field}");
+        var registerStatus = responseRegisterStatus.ResultAs<string>();
+        return registerStatus;
+    }
     public static async Task<string> GetStartStatus(FirebaseClient firebaseClient, Message message)
     {
         string isStartedField = "isStarted";;
@@ -59,6 +67,11 @@ public class Utils
         return responseString;
     }
 
+    public static async Task SetUserField(long userId,string field, dynamic data)
+    {
+        var firebaseClient = GetFirebaseClient();
+        await firebaseClient.SetAsync($"Users/{userId}/{field}", data);
+    }
     public static void SetTimerToAllUsers(FirebaseClient firebaseClient, TelegramBotClient botClient)
     {
         FirebaseResponse response = firebaseClient.Get("Users/");
@@ -72,10 +85,23 @@ public class Utils
             {
                 foreach (var get in getUsers)
                 {
-                    botClient.SendTextMessageAsync(get.Key, "Test message to all users");
+                    ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                    {
+                        new KeyboardButton[] { "Конечно, пора подвести итоги дня", "Напомни через час" }
+                    })
+                    {
+                        ResizeKeyboard = true
+                    };
+                    botClient.SendTextMessageAsync(get.Key, "Готов писать пост?",replyMarkup: replyKeyboardMarkup);
                 }
             }
         };
        
+    }
+    public static async void SetBotCommands(TelegramBotClient client)
+    {
+        BotCommand botCommand = new BotCommand{Command = "write_post", Description = "Написать пост в каннал"};
+        IEnumerable<BotCommand> s = new[] { botCommand};
+        await client.SetMyCommandsAsync(s);
     }
 }
