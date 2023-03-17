@@ -12,6 +12,7 @@ namespace DiaryBot;
 
 public class Utils
 {
+    
     public static async Task<long> GetChannelId(string botToken, string channelName)
     {
         var channelid = -1L;
@@ -52,10 +53,11 @@ public class Utils
         var registerStatus = responseRegisterStatus.ResultAs<string>();
         return registerStatus;
     }
-    public static async Task<string> GetUserField(FirebaseClient firebaseClient, Message message, string field)
+    public static async Task<string> GetUserField(long userId, string field)
     {
+        var firebaseClient = GetFirebaseClient();
         var responseRegisterStatus =
-            await firebaseClient.GetAsync($"Users/{message.Chat.Id}/{field}");
+            await firebaseClient.GetAsync($"Users/{userId}/{field}");
         var registerStatus = responseRegisterStatus.ResultAs<string>();
         return registerStatus;
     }
@@ -72,27 +74,40 @@ public class Utils
         var firebaseClient = GetFirebaseClient();
         await firebaseClient.SetAsync($"Users/{userId}/{field}", data);
     }
-    public static void SetTimerToAllUsers(FirebaseClient firebaseClient, TelegramBotClient botClient)
+    public static  void SetTimerToAllUsers(FirebaseClient firebaseClient, TelegramBotClient botClient)
     {
+        const string isPostedTodayField = "isPostedToday";
+        
         FirebaseResponse response = firebaseClient.Get("Users/");
         Dictionary<string, User> getUsers = response.ResultAs<Dictionary<string, User>>();
         var timer = new Timer(1000 * 60 * 60);
         timer.AutoReset = true;
         timer.Enabled = true;
-        timer.Elapsed += (sender, e) =>
+        timer.Elapsed += async (sender, e) =>
         {
             if (DateTime.Now.Hour == 21)
             {
                 foreach (var get in getUsers)
                 {
-                    ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                    if (GetUserField(long.Parse(get.Key), isPostedTodayField).Result == "false")
                     {
-                        new KeyboardButton[] { "Конечно, пора подвести итоги дня", "Напомни через час" }
-                    })
-                    {
-                        ResizeKeyboard = true
-                    };
-                    botClient.SendTextMessageAsync(get.Key, "Готов писать пост?",replyMarkup: replyKeyboardMarkup);
+                        ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+                        {
+                            new KeyboardButton[] { "Конечно, пора подвести итоги дня", "Напомни через час" }
+                        })
+                        {
+                            ResizeKeyboard = true
+                        };
+                        await botClient.SendTextMessageAsync(get.Key, "Готов писать пост?",replyMarkup: replyKeyboardMarkup);
+                    }
+                    
+                }
+            }
+            if (DateTime.Now.Hour == 3)
+            {
+                foreach (var get in getUsers)
+                {
+                    await SetUserField(long.Parse(get.Key), isPostedTodayField, false);
                 }
             }
         };
@@ -101,7 +116,30 @@ public class Utils
     public static async void SetBotCommands(TelegramBotClient client)
     {
         BotCommand botCommand = new BotCommand{Command = "write_post", Description = "Написать пост в каннал"};
-        IEnumerable<BotCommand> s = new[] { botCommand};
+        IEnumerable<BotCommand> s = new[] {botCommand};
         await client.SetMyCommandsAsync(s);
     }
+
+    public static async void IncreaseDayWithBot(long userId)
+    {
+        const string daysWithBotField = "daysWithBot";
+        var currentDaysWithBot = await GetUserField(userId, daysWithBotField);
+        await SetUserField(userId, daysWithBotField, currentDaysWithBot + 1);
+    }
+    public static string FormatPost(long userID, string postText)
+    {
+        const string daysWithBotField = "daysWithBot";
+        string date = DateTime.Now.ToShortDateString();
+        return $"{date}   (#{GetUserField(userID,daysWithBotField).Result})\n \n" +
+               $"{postText}" +
+               $"\n \n✅Написано с помощью DiaryBot🤖";
+    }
+
+    // public static string GetNumberEmoji(int number)
+    // {
+    //     switch (number)
+    //     {
+    //         case 1
+    //     }
+    // }
 }

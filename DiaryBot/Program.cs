@@ -29,14 +29,16 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
     const string isPostedTodayField = "isPostedToday";
     const string isPostingNowField = "isPostingNow";
     const string currentPostTextField = "currentPostText";
-    
+    const string daysWithBotField = "daysWithBot";
+    //TODO : 
     
     
     
     if (message?.Text != null)
     {
         var isRegistered = await Utils.GetRegisterStatus(firebaseClient, message);
-        var isPostingNow = await Utils.GetUserField(firebaseClient,message,isPostingNowField);
+        var isPostingNow = await Utils.GetUserField(message.Chat.Id,isPostingNowField);
+        var isPostedToday = await Utils.GetUserField(message.Chat.Id, isPostedTodayField);
         if (isRegistered != "true")
         {
             var isStarted = await Utils.GetStartStatus(firebaseClient, message);
@@ -104,12 +106,13 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
                     replyMarkup: new ReplyKeyboardRemove());
                 await firebaseClient.SetAsync($"Users/{message.Chat.Id}/{isRegisteredField}", true);
                 await firebaseClient.SetAsync($"Users/{message.Chat.Id}/{isPostedTodayField}", false);
+                await firebaseClient.SetAsync($"Users/{message.Chat.Id}/{daysWithBotField}", 1); 
             }
         }
 
         if (message.Text == "/write_post")
         {
-           
+            
             await botClient.SendTextMessageAsync(message.Chat.Id, "Как прошел день?");
             await firebaseClient.SetAsync($"Users/{message.Chat.Id}/{isPostingNowField}", true);
         }
@@ -118,7 +121,7 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
             
             await Utils.SetUserField(message.Chat.Id, currentPostTextField, message.Text);
             await botClient.SendTextMessageAsync(message.Chat.Id, "Так будет выглядеть твой пост : ");
-            var postText = Utils.GetUserField(firebaseClient, message, currentPostTextField).Result;
+            var postText = Utils.FormatPost(message.Chat.Id, Utils.GetUserField(message.Chat.Id, currentPostTextField).Result);
             ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
             {
                 new KeyboardButton[] { "Запостить ✅", "Отмена ❌" }
@@ -131,14 +134,19 @@ static async Task Update(ITelegramBotClient botClient, Update update, Cancellati
         }
         if (message.Text == "Запостить ✅")
         {
-            var channelId = long.Parse(Utils.GetUserField(firebaseClient, message, channelIdField).Result);
-            var postText = Utils.GetUserField(firebaseClient, message, currentPostTextField).Result;
+            var channelId = long.Parse(Utils.GetUserField( message.Chat.Id, channelIdField).Result);
+            var postText = Utils.FormatPost(message.Chat.Id, Utils.GetUserField(message.Chat.Id, currentPostTextField).Result);
             await botClient.SendTextMessageAsync(channelId, postText);
             await botClient.SendTextMessageAsync(message.Chat.Id, "Твой пост уже на канале ✅",
                 replyMarkup: new ReplyKeyboardRemove());
             await Utils.SetUserField(message.Chat.Id, currentPostTextField, "");
+            if (isPostedToday == "false")
+            {
+                await Utils.SetUserField(message.Chat.Id, isPostedTodayField, true);
+                Utils.IncreaseDayWithBot(message.Chat.Id);
+            }
+           
         }
-
         if (message.Text =="Отмена ❌")
         {
             await Utils.SetUserField(message.Chat.Id, currentPostTextField, "");
